@@ -15,7 +15,7 @@ buttonCloseLightbox.addEventListener('click', onCloseModal);
 LightboxOverlay.addEventListener('click', onOverlayClick)
 
 function createGallery(galleryItems) {
-    return galleryItems.map(({ preview, original, description }) => {
+    return galleryItems.map(({ preview, original, description }, index) => {
         return `
     <li class="gallery__item">
     <a
@@ -26,6 +26,7 @@ function createGallery(galleryItems) {
             class="gallery__image"
             src="${preview}"
             data-source="${original}"
+            index="${index}"
             alt="${description}"
         />
     </a>
@@ -42,17 +43,21 @@ function onGalleryClick(e) {
         return
     };
 
-    const imageLink = e.target.dataset.source;
-    const imageAlt = e.target.alt;
-
     onOpenModal()
 
-    lightboxImage.setAttribute('src', imageLink);
-    lightboxImage.setAttribute('alt', imageAlt);
+    lightboxImage.setAttribute('src', e.target.dataset.source);
+    lightboxImage.setAttribute('alt', e.target.alt);
+}
+
+function onEscKeyPress(e) {
+    if (e.code === 'Escape') {
+        onCloseModal()
+    }
 }
 
 function onOpenModal() {
     window.addEventListener('keydown', onEscKeyPress);
+
     modalLightbox.classList.add('is-open');
 }
 
@@ -70,8 +75,3 @@ function onOverlayClick(e) {
     }
 }
 
-function onEscKeyPress(e) {
-    if (e.code === 'Escape') {
-        onCloseModal()
-    }
-}
