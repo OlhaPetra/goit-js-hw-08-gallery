@@ -26,7 +26,7 @@ function createGallery(galleryItems) {
             class="gallery__image"
             src="${preview}"
             data-source="${original}"
-            index="${index}"
+            data-index="${index}"
             alt="${description}"
         />
     </a>
