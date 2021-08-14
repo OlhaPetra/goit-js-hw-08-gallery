@@ -30,8 +30,8 @@ function createGallery(galleryItems) {
             alt="${description}"
         />
     </a>
-</li>
-`;
+    </li>
+    `;
     }).join('');
 }
 
@@ -74,4 +74,3 @@ function onEscKeyPress(e) {
         onCloseModal()
     }
 }
-
