@@ -49,12 +49,6 @@ function onGalleryClick(e) {
     lightboxImage.setAttribute('alt', e.target.alt);
 }
 
-function onEscKeyPress(e) {
-    if (e.code === 'Escape') {
-        onCloseModal()
-    }
-}
-
 function onOpenModal() {
     window.addEventListener('keydown', onEscKeyPress);
 
@@ -71,6 +65,12 @@ function onCloseModal() {
 
 function onOverlayClick(e) {
     if (e.target === e.currentTarget) {
+        onCloseModal()
+    }
+}
+
+function onEscKeyPress(e) {
+    if (e.code === 'Escape') {
         onCloseModal()
     }
 }
