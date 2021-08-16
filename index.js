@@ -1,22 +1,25 @@
-import galleryItems from './app.js';
+import galleryItems from "./app.js";
 
-const galleryContainer = document.querySelector('.js-gallery');
+const galleryContainer = document.querySelector(".js-gallery");
 const galleryMarkup = createGallery(galleryItems);
 
-const modalLightbox = document.querySelector('.lightbox');
-const LightboxOverlay = document.querySelector('.lightbox__overlay');
-const lightboxImage = document.querySelector('.lightbox__image');
-const buttonCloseLightbox = document.querySelector('[data-action="close-lightbox"]');
+const modalLightbox = document.querySelector(".lightbox");
+const LightboxOverlay = document.querySelector(".lightbox__overlay");
+const lightboxImage = document.querySelector(".lightbox__image");
+const buttonCloseLightbox = document.querySelector(
+  '[data-action="close-lightbox"]'
+);
 
-galleryContainer.insertAdjacentHTML('beforeend', galleryMarkup);
+galleryContainer.insertAdjacentHTML("beforeend", galleryMarkup);
 
-galleryContainer.addEventListener('click', onGalleryClick);
-buttonCloseLightbox.addEventListener('click', onCloseModal);
-LightboxOverlay.addEventListener('click', onOverlayClick)
+galleryContainer.addEventListener("click", onGalleryClick);
+buttonCloseLightbox.addEventListener("click", onCloseModal);
+LightboxOverlay.addEventListener("click", onOverlayClick);
 
 function createGallery(galleryItems) {
-    return galleryItems.map(({ preview, original, description }, index) => {
-        return `
+  return galleryItems
+    .map(({ preview, original, description }, index) => {
+      return `
     <li class="gallery__item">
     <a
         class="gallery__link"
@@ -32,45 +35,80 @@ function createGallery(galleryItems) {
     </a>
     </li>
     `;
-    }).join('');
+    })
+    .join("");
 }
 
 function onGalleryClick(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const isGalleryItem = e.target.classList.contains('gallery__image');
-    if (!isGalleryItem) {
-        return
-    };
+  const isGalleryItem = e.target.classList.contains("gallery__image");
+  if (!isGalleryItem) {
+    return;
+  }
 
-    onOpenModal()
+  onOpenModal();
 
-    lightboxImage.setAttribute('src', e.target.dataset.source);
-    lightboxImage.setAttribute('alt', e.target.alt);
+  lightboxImage.setAttribute("src", e.target.dataset.source);
+  lightboxImage.setAttribute("ind", e.target.dataset.index);
+  lightboxImage.setAttribute("alt", e.target.alt);
 }
 
 function onOpenModal() {
-    window.addEventListener('keydown', onEscKeyPress);
+  window.addEventListener("keydown", onKeyPress);
 
-    modalLightbox.classList.add('is-open');
+  modalLightbox.classList.add("is-open");
 }
 
 function onCloseModal() {
-    window.removeEventListener('keydown', onEscKeyPress);
+  window.removeEventListener("keydown", onKeyPress);
 
-    modalLightbox.classList.remove('is-open');
-    lightboxImage.removeAttribute('src');
-    lightboxImage.removeAttribute('alt');
+  modalLightbox.classList.remove("is-open");
+  lightboxImage.removeAttribute("src");
+  lightboxImage.removeAttribute("alt");
+  lightboxImage.removeAttribute("ind");
 }
 
 function onOverlayClick(e) {
-    if (e.target === e.currentTarget) {
-        onCloseModal()
-    }
+  if (e.target === e.currentTarget) {
+    onCloseModal();
+  }
 }
 
-function onEscKeyPress(e) {
-    if (e.code === 'Escape') {
-        onCloseModal()
-    }
+function onKeyPress(e) {
+  switch (e.code) {
+    case "Escape":
+      onCloseModal();
+      break;
+
+    case "ArrowRight":
+      showNextImage();
+      break;
+
+    case "ArrowLeft":
+      showPrevImage();
+      break;
+  }
+}
+
+function showNextImage() {
+  const activeImage = Number(lightboxImage.getAttribute("ind"));
+  let index = activeImage ? activeImage : 0;
+  const nextImageInd =
+    index < galleryItems.length - 1 ? (index += 1) : (index = 0);
+
+  lightboxImage.setAttribute("src", galleryItems[nextImageInd].original);
+  lightboxImage.setAttribute("alt", galleryItems[nextImageInd].description);
+  lightboxImage.setAttribute("ind", nextImageInd);
+}
+
+function showPrevImage() {
+  const activeImage = Number(lightboxImage.getAttribute("ind"));
+  let index = activeImage ? activeImage : galleryItems.length - 1;
+  const prevImageInd =
+    index > 0 ? (index -= 1) : (index = galleryItems.length - 1);
+
+  lightboxImage.setAttribute("src", galleryItems[prevImageInd].original);
+  lightboxImage.setAttribute("alt", galleryItems[prevImageInd].description);
+  lightboxImage.setAttribute("ind", prevImageInd);
 }
