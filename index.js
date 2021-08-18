@@ -112,3 +112,38 @@ function showPrevImage() {
   lightboxImage.setAttribute("alt", galleryItems[prevImageInd].description);
   lightboxImage.setAttribute("ind", prevImageInd);
 }
+
+/*Intersection Observer API*/
+
+/* определяем кого слушаем - картинок*/
+const items = [...galleryContainer.children];
+
+/*создаем объект настроек*/
+
+const options = {
+  root: null,
+  rootMargin: "0px",
+  threshold: 0.5,
+};
+
+/*создаем єкземляр observer*/
+const observer = new IntersectionObserver(callback, options);
+
+/*создаем функцию callback*/
+
+function callback(entries, observer) {
+/*   console.log(entries)
+ */
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("observe")
+    } else {entry.target.classList.remove("observe")}
+      });
+}
+
+/*вызываем экземпляр*/
+/* console.log(items)
+ */
+items.forEach((li) => {
+  observer.observe(li);
+});
